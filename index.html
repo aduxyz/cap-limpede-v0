@@ -1,0 +1,2878 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Cap Limpede</title>
+  <link rel="stylesheet" href="/news-preview.css?v=1" />
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --panel-alt: #eef3fb;
+      --text: #202733;
+      --muted: #677489;
+      --line: #d8e0ea;
+      --accent: #2563eb;
+      --lvl1: #ff2d2d;
+      --lvl1-bg: rgba(255, 45, 45, 0.2);
+      --lvl2: #ffd400;
+      --lvl2-bg: rgba(255, 212, 0, 0.26);
+      --lvl3: #08a045;
+      --lvl3-bg: rgba(8, 160, 69, 0.18);
+      --approved: #15803d;
+      --approved-bg: rgba(21, 128, 61, 0.12);
+      --rejected: #6b7280;
+      --shadow: 0 16px 34px rgba(32, 39, 51, 0.08);
+      --radius: 24px;
+      --danger: #b91c1c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #f8fafe 0%, #f3f6fb 100%);
+      color: var(--text);
+    }
+
+    .app {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .title h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.1;
+    }
+
+    .title p {
+      margin: 0;
+      max-width: 900px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid rgba(216, 224, 234, 0.92);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .step-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel-head {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-head h2 {
+      margin: 0 0 6px;
+      font-size: 18px;
+    }
+
+    .panel-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .panel-body {
+      padding: 22px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .field-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .field-head-stack {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .step1-levels {
+      gap: 10px;
+    }
+
+    .field-head label {
+      margin-bottom: 0;
+    }
+
+    textarea,
+    input[type="text"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      border-radius: 16px;
+      padding: 14px 16px;
+      font: inherit;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    textarea:focus,
+    input[type="text"]:focus {
+      border-color: rgba(37, 99, 235, 0.55);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    textarea[readonly] {
+      background: #f7f9fc;
+      color: var(--muted);
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+    }
+
+    .hint {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(32, 39, 51, 0.08);
+    }
+
+    button:disabled {
+      cursor: wait;
+      opacity: 0.7;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .status {
+      min-height: 22px;
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .status.success {
+      color: var(--approved);
+    }
+
+    .meta-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .meta-item {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: #fbfcfe;
+    }
+
+    .meta-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+
+    .meta-item span {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .review-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .review-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .runs-stack {
+      display: grid;
+      gap: 22px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .summary-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fbfcfe;
+      padding: 14px 16px;
+    }
+
+    .step1-model-picker {
+      margin: 16px 0 10px;
+    }
+
+    .step1-model-count {
+      margin: -2px 0 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .summary-card-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .summary-model-toggle {
+      margin: 0;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+      flex: 0 0 auto;
+    }
+
+    .summary-card h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .summary-line {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .bulk-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .bulk-counter {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .bulk-progress {
+      width: min(420px, 100%);
+      height: 10px;
+      border-radius: 999px;
+      background: #e8edf5;
+      overflow: hidden;
+      margin: 2px 0 14px;
+    }
+
+    .bulk-progress-bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #2563eb 0%, #5b8cff 100%);
+      transition: width 0.2s ease;
+    }
+
+    .run-card {
+      display: grid;
+      gap: 14px;
+    }
+
+    .run-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 0 4px;
+    }
+
+    .run-head h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .run-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .view-toggle {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .view-toggle button {
+      border: 0;
+      border-right: 1px solid var(--line);
+      border-radius: 0;
+      padding: 7px 12px;
+      background: transparent;
+      color: var(--muted);
+      box-shadow: none;
+      transform: none;
+    }
+
+    .view-toggle button:last-child {
+      border-right: 0;
+    }
+
+    .view-toggle button.active {
+      background: #e8f0ff;
+      color: var(--accent);
+    }
+
+    .view-toggle.global {
+      margin-right: 4px;
+    }
+
+    .run-meta {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .pair-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .news-preview-shell {
+      background: transparent;
+      border-radius: 0;
+      overflow: visible;
+      padding: 0;
+    }
+
+    .loading-review {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48vh;
+      text-align: center;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.6;
+      padding: 40px 24px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      align-items: center;
+    }
+
+    .legend-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .pill input {
+      margin: 0;
+      width: 15px;
+      height: 15px;
+      accent-color: currentColor;
+    }
+
+    .pill.level-1 {
+      color: var(--lvl1);
+      border-color: rgba(255, 45, 45, 0.28);
+    }
+
+    .pill.level-2 {
+      color: #b58c00;
+      border-color: rgba(255, 212, 0, 0.4);
+    }
+
+    .pill.level-3 {
+      color: var(--lvl3);
+      border-color: rgba(8, 160, 69, 0.28);
+    }
+
+    .pill input:disabled {
+      opacity: 1;
+      cursor: not-allowed;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .dot.l1 { background: var(--lvl1); }
+    .dot.l2 { background: var(--lvl2); }
+    .dot.l3 { background: var(--lvl3); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      position: relative;
+      border: 1px solid rgba(216, 224, 234, 0.92);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      min-height: 78vh;
+      overflow: hidden;
+    }
+
+    .panel.proposed {
+      background: #fff;
+    }
+
+    .article {
+      font-size: 18px;
+      line-height: 1.85;
+    }
+
+    .paragraph {
+      margin: 0 0 10px;
+      white-space: pre-wrap;
+      position: relative;
+      padding-top: 0;
+    }
+
+    .paragraph:last-child {
+      margin-bottom: 0;
+    }
+
+    .paragraph.plain {
+      font-size: 12px !important;
+      line-height: 1.7 !important;
+      color: #8a94a6 !important;
+      font-weight: 400 !important;
+      opacity: 0.95;
+    }
+
+    .segment {
+      position: relative;
+      padding: 2px 0;
+      border-bottom: 3px dotted transparent;
+      transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+    }
+
+    .segment.has-suggestion {
+      cursor: pointer;
+    }
+
+    .segment.has-suggestion.level-1 {
+      border-bottom-color: var(--lvl1);
+    }
+
+    .segment.has-suggestion.level-2 {
+      border-bottom-color: var(--lvl2);
+    }
+
+    .segment.has-suggestion.level-3 {
+      border-bottom-color: var(--lvl3);
+    }
+
+    .segment.has-suggestion[data-type="original"] .segment-delete {
+      color: #ff0000;
+      font-style: italic;
+      text-decoration: none;
+      background: #FFFFCC;
+    }
+
+    .segment.has-suggestion[data-type="proposed"] .segment-insert {
+      font-weight: 800;
+      background: #FFFFCC;
+    }
+
+    .vote-card-original .segment-delete {
+      color: #ff0000;
+      font-style: italic;
+      text-decoration: none;
+      background: #FFFFCC;
+    }
+
+    .vote-card-proposed .segment-insert {
+      font-weight: 800;
+      text-decoration: none;
+      background: #FFFFCC;
+    }
+
+    .segment.has-suggestion.level-1:hover,
+    .segment.has-suggestion.level-1.active {
+      background: var(--lvl1-bg);
+    }
+
+    .segment.has-suggestion.level-2:hover,
+    .segment.has-suggestion.level-2.active {
+      background: var(--lvl2-bg);
+    }
+
+    .segment.has-suggestion.level-3:hover,
+    .segment.has-suggestion.level-3.active {
+      background: var(--lvl3-bg);
+    }
+
+    .segment.approved {
+      background: var(--approved-bg);
+      border-bottom-color: var(--approved);
+    }
+
+    .segment.rejected {
+      color: var(--rejected);
+      opacity: 0.6;
+      text-decoration: line-through;
+    }
+
+    .segment.hidden-by-filter {
+      border-bottom-color: transparent !important;
+      background: transparent !important;
+      cursor: default;
+    }
+
+    .menu {
+      position: absolute;
+      z-index: 100;
+      width: 320px;
+      background: rgba(255, 255, 255, 0.98);
+      border: 1px solid rgba(216, 224, 234, 0.96);
+      border-radius: 16px;
+      box-shadow: 0 20px 44px rgba(32, 39, 51, 0.16);
+      overflow: hidden;
+      display: none;
+    }
+
+    .menu.visible {
+      display: block;
+    }
+
+    .menu-head {
+      padding: 14px 16px 10px;
+      background: #f8fbff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .menu-head-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .menu-count {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .menu-head .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .badge.level-1 { background: var(--lvl1-bg); color: var(--lvl1); }
+    .badge.level-2 { background: var(--lvl2-bg); color: #b58c00; }
+    .badge.level-3 { background: var(--lvl3-bg); color: var(--lvl3); }
+
+    .menu-body {
+      padding: 14px 16px 16px;
+    }
+
+    .menu-label {
+      margin-bottom: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+    }
+
+    .menu-reason {
+      margin: 0 0 14px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .menu-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .menu-actions .approve {
+      color: var(--approved);
+      border-color: rgba(21, 128, 61, 0.28);
+    }
+
+    .menu-actions .reject {
+      color: #4b5563;
+      border-color: rgba(107, 114, 128, 0.3);
+    }
+
+    .empty-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(32, 39, 51, 0.26);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 120;
+      padding: 24px;
+    }
+
+    .empty-modal-backdrop.visible {
+      display: flex;
+    }
+
+    .empty-modal {
+      width: min(420px, 100%);
+      background: rgba(255, 255, 255, 0.98);
+      border: 1px solid rgba(216, 224, 234, 0.96);
+      border-radius: 18px;
+      box-shadow: 0 24px 50px rgba(32, 39, 51, 0.18);
+      padding: 22px 22px 18px;
+    }
+
+    .empty-modal h3 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .empty-modal p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .empty-modal-actions {
+      width: 100%;
+    }
+
+    .empty-modal-bulk-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    .empty-modal-bulk-nav.hidden {
+      display: none;
+    }
+
+    .empty-modal-bulk-nav span {
+      color: var(--muted);
+      font-weight: 700;
+      min-width: 48px;
+      text-align: center;
+    }
+
+    .vote-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(32, 39, 51, 0.26);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 130;
+      padding: 24px;
+    }
+
+    .vote-modal-backdrop.visible {
+      display: flex;
+    }
+
+    .vote-modal {
+      width: min(1380px, 100%);
+      max-height: 88vh;
+      overflow: auto;
+      background: rgba(255, 255, 255, 0.99);
+      border: 1px solid rgba(216, 224, 234, 0.96);
+      border-radius: 20px;
+      box-shadow: 0 24px 50px rgba(32, 39, 51, 0.18);
+      padding: 20px;
+    }
+
+    .vote-modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .vote-modal-head h3 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .vote-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .vote-column {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fbfcfe;
+      overflow: hidden;
+    }
+
+    .vote-column-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .vote-column-head strong {
+      font-size: 18px;
+    }
+
+    .vote-best.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .vote-best:disabled {
+      opacity: 1;
+      cursor: wait;
+      box-shadow: none;
+      transform: none;
+      background: #eef2f7;
+      border-color: #d7dee8;
+      color: #4b5563;
+    }
+
+    .vote-best.active:disabled {
+      background: #eef2f7;
+      border-color: #d7dee8;
+      color: #4b5563;
+    }
+
+    .vote-best.loading::after {
+      content: "…";
+      display: inline-block;
+      margin-left: 4px;
+    }
+
+    .vote-list {
+      padding: 4px 0;
+    }
+
+    .vote-pair {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .vote-pair:last-child {
+      border-bottom: 0;
+    }
+
+    .vote-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .vote-card-original,
+    .vote-card-proposed {
+      padding: 12px 14px;
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .vote-card-original {
+      background: #f3f4f6;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .vote-card-proposed {
+      background: #fff;
+    }
+
+    .vote-row {
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .vote-row + .vote-row {
+      margin-top: 6px;
+    }
+
+    .vote-reason {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .debug-card pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 12px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .debug-card.hidden-debug {
+      display: none;
+    }
+
+    .debug-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .debug-item {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 14px;
+      background: #fbfcfe;
+    }
+
+    .debug-item strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+
+    .debug-item span {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 1150px) {
+      .step-layout,
+      .grid,
+      .review-layout,
+      .pair-grid,
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section id="step1" class="step">
+      <div class="header">
+        <div class="title">
+          <h1>Cap Limpede</h1>
+          <p>Pasul 1: introdu știrea și promptul editabil. Backend-ul detectează automat dacă ai trimis text simplu, HTML sau JSON simplu de forma `{"title": "...", "content": "<p>...</p>"}`.</p>
+        </div>
+      </div>
+
+      <div class="step-layout">
+        <div class="card">
+          <div class="panel-head">
+            <h2>Input</h2>
+            <p>Poți lipi text simplu, HTML sau JSON simplu cu `title` și `content` HTML.</p>
+          </div>
+          <div class="panel-body">
+            <div class="field">
+              <div class="field-head">
+                <label for="sourceInput">Știre</label>
+                <button id="topNextButton" class="btn-primary">Next</button>
+              </div>
+              <textarea id="sourceInput" rows="18"></textarea>
+            </div>
+
+            <div class="field">
+              <div class="field-head field-head-stack">
+                <label for="promptA">Prompt</label>
+                <div class="legend step1-levels">
+                  <label class="pill level-1"><input type="checkbox" checked disabled /><span class="dot l1"></span>Nivel 1: typo / formă clar greşită</label>
+                  <label class="pill level-2"><input id="step1ToggleLevel2" type="checkbox" checked /><span class="dot l2"></span>Nivel 2: claritate</label>
+                </div>
+              </div>
+              <textarea id="promptA" rows="12"></textarea>
+              <div class="hint">Promptul se actualizează automat după nivelurile bifate.</div>
+            </div>
+
+            <div class="row">
+              <button id="analyzeButton" class="btn-primary">Next</button>
+              <button id="bulkProcessButton">Bulk process</button>
+            </div>
+            <div id="step1ModelPicker" class="summary-grid step1-model-picker"></div>
+            <div id="step1ModelCount" class="step1-model-count"></div>
+            <div id="step1Status" class="status"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="panel-head">
+            <h2>Ce face backend-ul</h2>
+            <p>Comportamentul cerut pentru prima versiune.</p>
+          </div>
+          <div class="panel-body">
+            <div class="meta-list">
+              <div class="meta-item">
+                <strong>Autodetect input</strong>
+                <span>Text simplu, HTML sau JSON simplu cu `title` + `content` HTML.</span>
+              </div>
+              <div class="meta-item">
+                <strong>Prompt unic</strong>
+                <span>Același prompt editabil este trimis în paralel către `gpt-5.4-mini`, `gpt-5.4-nano` și `gpt-5.4`.</span>
+              </div>
+              <div class="meta-item">
+                <strong>Comparație paralelă</strong>
+                <span>Pasul 2 afișează câte o pereche `Original / Propus` pentru fiecare model, plus timpul lui de răspuns.</span>
+              </div>
+              <div class="meta-item">
+                <strong>Pasul 2</strong>
+                <span>După `Next`, vezi direct interfața de review cu original vs propus, pe baza răspunsului backend-ului.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="step2" class="step hidden">
+      <div class="review-topbar">
+        <div class="title">
+          <h1>Cap Limpede</h1>
+          <p id="reviewSubtitle">Pasul 2: comparație interactivă între 3 modele.</p>
+        </div>
+      </div>
+
+      <div class="legend-bar">
+        <div class="legend">
+          <label class="pill level-1"><input type="checkbox" checked disabled /><span class="dot l1"></span>Nivel 1: typo / formă clar greşită</label>
+          <label class="pill level-2"><input id="toggleLevel2" type="checkbox" checked /><span class="dot l2"></span>Nivel 2: claritate</label>
+        </div>
+        <div class="row">
+          <div id="bulkNav" class="bulk-nav hidden">
+            <button id="bulkPrevButton">Prev</button>
+            <div id="bulkCounter" class="bulk-counter">1 / 1</div>
+            <button id="bulkNextButton">Next</button>
+          </div>
+          <div id="globalViewToggle" class="view-toggle global">
+            <button type="button" data-global-view-mode="suggestii" class="active">sugestii</button>
+            <button type="button" data-global-view-mode="original">preview</button>
+          </div>
+          <button id="bulkProcessButtonStep2">Bulk process</button>
+          <button id="voteButton">VOT</button>
+          <button id="undoButton">Undo</button>
+          <button id="redrawButton">Reset suggestions</button>
+          <button id="newTextButton">NEW TEXT</button>
+        </div>
+      </div>
+
+      <div id="bulkProgress" class="bulk-progress hidden">
+        <div id="bulkProgressBar" class="bulk-progress-bar"></div>
+      </div>
+
+      <div id="reviewLayout" class="review-layout">
+        <div id="reviewSummary" class="summary-grid"></div>
+        <div id="reviewResults" class="runs-stack"></div>
+      </div>
+    </section>
+  </div>
+
+  <div id="contextMenu" class="menu" aria-hidden="true"></div>
+  <div id="emptyModalBackdrop" class="empty-modal-backdrop" aria-hidden="true">
+    <div class="empty-modal">
+      <h3 id="emptyModalTitle">Nu sunt sugestii de editare</h3>
+      <p id="emptyModalMessage">Modelul nu a propus modificări pentru textul curent. Poți reveni la pasul 1 și ajusta inputul sau promptul.</p>
+      <div class="row empty-modal-actions">
+        <button id="emptyModalResetButton">Reset</button>
+        <button id="closeEmptyModalButton">Închide</button>
+        <div id="emptyModalBulkNav" class="empty-modal-bulk-nav hidden">
+          <button id="emptyModalPrevButton">Prev</button>
+          <span id="emptyModalCounter">1 / 1</span>
+          <button id="emptyModalNextButton" class="btn-primary">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="voteModalBackdrop" class="vote-modal-backdrop" aria-hidden="true">
+    <div class="vote-modal">
+      <div class="vote-modal-head">
+        <h3>VOT</h3>
+      </div>
+      <div id="voteModalGrid" class="vote-grid"></div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      config: null,
+      review: null,
+      runStates: {},
+      selectedModels: [],
+      selectedModelsInitialized: false,
+      bulkMode: false,
+      bulkCache: null,
+      bulkCurrentIndex: 0,
+      bulkStatus: null,
+      bulkPollTimer: null,
+      globalViewMode: "suggestii",
+      history: [],
+      levelFilters: { 1: true, 2: true },
+      activeMenuId: null,
+      activeRunKey: null,
+      isLoadingReview: false,
+      scrollSettleTimer: null,
+      openVoteAfterReview: false,
+      votePendingModel: null
+    };
+
+    const demoSource = `Bursele europene au încheiat şedinţa de marţi pe minus, investitorii fiind în expectativă înaintea termenului limită stabilit de preşedintele american Donald Trump pentru ca Iranul să redeschidă strâmtoarea Ormuz, transmite CNBC.
+
+Indicele paneuropean Stoxx 600 a închis cu aproape 1% mai jos, după ce a şters câştigurile din prima parte a şedinţei. Majoritatea sectoarelor şi a principalelor pieţe bursiere regionale au terminat ziua în teritoriu negativ.
+
+Scăderea de marţi a pieţelor europene a venit după o pauză de patru zile de Paşte, după ce şedinţa de joi se încheiase cu rezultate mixte. Investitorii încearcă să interpreteze mesajele contradictorii ale administraţiei americane privind o posibilă rezolvare a conflictului. Trump a ameninţat că va lovi infrastructura civilă a Iranului dacă nu se ajunge la un acord de pace în mai puţin de 24 de ore, dar a sugerat în acelaşi timp că liderii iranieni negociază ”cu bună credinţă”.`;
+
+    const step1El = document.getElementById("step1");
+    const step2El = document.getElementById("step2");
+    const sourceInputEl = document.getElementById("sourceInput");
+    const promptEl = document.getElementById("promptA");
+    const step1ToggleLevel2El = document.getElementById("step1ToggleLevel2");
+    const step1StatusEl = document.getElementById("step1Status");
+    const analyzeButtonEl = document.getElementById("analyzeButton");
+    const bulkProcessButtonEl = document.getElementById("bulkProcessButton");
+    const bulkProcessButtonStep2El = document.getElementById("bulkProcessButtonStep2");
+    const step1ModelPickerEl = document.getElementById("step1ModelPicker");
+    const step1ModelCountEl = document.getElementById("step1ModelCount");
+    const topNextButtonEl = document.getElementById("topNextButton");
+    const reviewSubtitleEl = document.getElementById("reviewSubtitle");
+    const reviewSummaryEl = document.getElementById("reviewSummary");
+    const reviewResultsEl = document.getElementById("reviewResults");
+    const menuEl = document.getElementById("contextMenu");
+    const emptyModalBackdropEl = document.getElementById("emptyModalBackdrop");
+    const emptyModalTitleEl = document.getElementById("emptyModalTitle");
+    const emptyModalMessageEl = document.getElementById("emptyModalMessage");
+    const closeEmptyModalButtonEl = document.getElementById("closeEmptyModalButton");
+    const emptyModalResetButtonEl = document.getElementById("emptyModalResetButton");
+    const emptyModalBulkNavEl = document.getElementById("emptyModalBulkNav");
+    const emptyModalPrevButtonEl = document.getElementById("emptyModalPrevButton");
+    const emptyModalCounterEl = document.getElementById("emptyModalCounter");
+    const emptyModalNextButtonEl = document.getElementById("emptyModalNextButton");
+    const voteModalBackdropEl = document.getElementById("voteModalBackdrop");
+    const voteModalGridEl = document.getElementById("voteModalGrid");
+    const globalViewToggleEl = document.getElementById("globalViewToggle");
+    const voteButtonEl = document.getElementById("voteButton");
+    const undoButtonEl = document.getElementById("undoButton");
+    const redrawButtonEl = document.getElementById("redrawButton");
+    const newTextButtonEl = document.getElementById("newTextButton");
+    const bulkNavEl = document.getElementById("bulkNav");
+    const bulkPrevButtonEl = document.getElementById("bulkPrevButton");
+    const bulkNextButtonEl = document.getElementById("bulkNextButton");
+    const bulkCounterEl = document.getElementById("bulkCounter");
+    const bulkProgressEl = document.getElementById("bulkProgress");
+    const bulkProgressBarEl = document.getElementById("bulkProgressBar");
+    const STORAGE_KEY = "cap-limpede-state-v2";
+    const SOURCE_DEFAULT_KEY = "cap-limpede-last-source-v1";
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function getRunKey(model) {
+      return String(model || "").replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, "").toLowerCase() || "run";
+    }
+
+    function getAvailableModels() {
+      return Array.isArray(state.config?.models) && state.config.models.length
+        ? state.config.models
+        : ["gpt-5.4-mini", "gpt-5.4-nano", "gpt-5.4"];
+    }
+
+    function normalizeSelectedModels(models) {
+      const availableModels = getAvailableModels();
+      return Array.isArray(models)
+        ? models.filter((model) => availableModels.includes(model))
+        : [];
+    }
+
+    function isModelSelected(model) {
+      return normalizeSelectedModels(state.selectedModels).includes(model);
+    }
+
+    function formatElapsed(ms) {
+      if (typeof ms !== "number") return "-";
+      if (ms < 1000) return `${ms} ms`;
+      return `${(ms / 1000).toFixed(2)} s`;
+    }
+
+    function formatTokens(usage) {
+      if (!usage || typeof usage.total_tokens !== "number") return null;
+      return `${usage.total_tokens} tok`;
+    }
+
+    function formatEstimatedCost(value) {
+      if (typeof value !== "number" || Number.isNaN(value)) return null;
+      if (value === 0) return "$0.000000";
+      return `$${value.toFixed(6)}`;
+    }
+
+    function buildSummaryMetrics(run) {
+      const metrics = [formatElapsed(run.elapsed_ms)];
+      const tokens = formatTokens(run.usage);
+      const suggestionsCount = `${(run.suggestions || []).length} sug`;
+      const cost = formatEstimatedCost(run.estimated_cost_usd);
+      if (tokens) metrics.push(tokens);
+      metrics.push(suggestionsCount);
+      if (cost) metrics.push(cost);
+      return metrics;
+    }
+
+    function setStep1Status(message, kind = "") {
+      step1StatusEl.textContent = message || "";
+      step1StatusEl.className = `status${kind ? ` ${kind}` : ""}`;
+    }
+
+    function focusSourceInput(selectAll = false) {
+      if (!step1El.classList.contains("hidden")) {
+        sourceInputEl.focus();
+        if (selectAll) sourceInputEl.select();
+      }
+    }
+
+    function getSerializableRunStates() {
+      return Object.fromEntries(
+        Object.entries(state.runStates).map(([runKey, runState]) => [
+          runKey,
+          {
+            materializedSuggestions: runState.materializedSuggestions || []
+          }
+        ])
+      );
+    }
+
+    function saveState() {
+      localStorage.setItem(SOURCE_DEFAULT_KEY, sourceInputEl.value);
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          source: sourceInputEl.value,
+          prompt: promptEl.value,
+          review: state.review,
+          config: state.config,
+          runStates: getSerializableRunStates(),
+          selectedModels: normalizeSelectedModels(state.selectedModels),
+          bulkMode: state.bulkMode,
+          bulkCurrentIndex: state.bulkCurrentIndex,
+          globalViewMode: state.globalViewMode,
+          history: state.history,
+          step: step2El.classList.contains("hidden") ? 1 : 2,
+          levelFilters: state.levelFilters,
+          isLoadingReview: state.isLoadingReview,
+          openVoteAfterReview: state.openVoteAfterReview
+        })
+      );
+    }
+
+    function restoreState() {
+      const savedSourceDefault = localStorage.getItem(SOURCE_DEFAULT_KEY);
+      if (savedSourceDefault && !sourceInputEl.value) {
+        sourceInputEl.value = savedSourceDefault;
+      }
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return false;
+      try {
+        const parsed = JSON.parse(raw);
+        if (typeof parsed.source === "string") sourceInputEl.value = parsed.source;
+        if (typeof parsed.prompt === "string") promptEl.value = parsed.prompt;
+        if (parsed.levelFilters) state.levelFilters = { ...state.levelFilters, ...parsed.levelFilters };
+        state.isLoadingReview = !!parsed.isLoadingReview;
+        syncLevelToggleInputs();
+        state.config = parsed.config || null;
+        state.review = parsed.review || null;
+        state.runStates = parsed.runStates || {};
+        state.selectedModelsInitialized = Object.prototype.hasOwnProperty.call(parsed, "selectedModels");
+        state.selectedModels = state.selectedModelsInitialized
+          ? normalizeSelectedModels(parsed.selectedModels)
+          : [];
+        state.bulkMode = !!parsed.bulkMode;
+        state.bulkCurrentIndex = Number.isInteger(parsed.bulkCurrentIndex) ? parsed.bulkCurrentIndex : 0;
+        state.globalViewMode = parsed.globalViewMode === "original" ? "original" : "suggestii";
+        state.history = Array.isArray(parsed.history) ? parsed.history : [];
+        state.openVoteAfterReview = !!parsed.openVoteAfterReview;
+        if (parsed.step === 2 && parsed.review) {
+          step1El.classList.add("hidden");
+          step2El.classList.remove("hidden");
+          renderReview();
+        } else if (parsed.step === 2 && parsed.isLoadingReview) {
+          step1El.classList.add("hidden");
+          step2El.classList.remove("hidden");
+          renderLoadingReview();
+        }
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    async function loadConfig() {
+      const response = await fetch("/api/config");
+      const data = await response.json();
+      state.config = data;
+      if (!state.selectedModelsInitialized) {
+        state.selectedModels = [...getAvailableModels()];
+        state.selectedModelsInitialized = true;
+      } else {
+        state.selectedModels = normalizeSelectedModels(state.selectedModels);
+      }
+      renderModelSelectors();
+      if (!promptEl.value) {
+        syncPromptTemplateForLevels();
+      }
+      syncLevelToggleInputs();
+      if (!sourceInputEl.value) sourceInputEl.value = localStorage.getItem(SOURCE_DEFAULT_KEY) || demoSource;
+      saveState();
+    }
+
+    function renderUndoState() {
+      undoButtonEl.disabled = state.history.length === 0;
+    }
+
+    function closeVoteModal() {
+      voteModalBackdropEl.classList.remove("visible");
+      voteModalBackdropEl.setAttribute("aria-hidden", "true");
+      state.votePendingModel = null;
+    }
+
+    function syncGlobalViewToggle() {
+      if (!globalViewToggleEl) return;
+      globalViewToggleEl.querySelectorAll("[data-global-view-mode]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.globalViewMode === state.globalViewMode);
+      });
+    }
+
+    function setModelSelected(model, checked) {
+      const availableModels = getAvailableModels();
+      const current = new Set(normalizeSelectedModels(state.selectedModels));
+      if (checked) {
+        current.add(model);
+      } else {
+        current.delete(model);
+      }
+      state.selectedModels = availableModels.filter((item) => current.has(item));
+      state.selectedModelsInitialized = true;
+      renderModelSelectors();
+      if (!step2El.classList.contains("hidden")) {
+        if (state.review) renderReview();
+        else if (state.isLoadingReview) renderLoadingReview();
+      }
+      saveState();
+    }
+
+    function getRequestedLevels() {
+      return state.levelFilters[2] ? [1, 2] : [1];
+    }
+
+    function getPromptForCurrentLevels() {
+      if (!state.config) return promptEl.value || "";
+      return state.levelFilters[2]
+        ? (state.config.prompt_default || "")
+        : (state.config.prompt_level_1_only || state.config.prompt_default || "");
+    }
+
+    function syncLevelToggleInputs() {
+      const enabled = !!state.levelFilters[2];
+      document.getElementById("toggleLevel2").checked = enabled;
+      if (step1ToggleLevel2El) step1ToggleLevel2El.checked = enabled;
+    }
+
+    function syncPromptTemplateForLevels() {
+      promptEl.value = getPromptForCurrentLevels();
+    }
+
+    function setLevel2Enabled(enabled) {
+      state.levelFilters[2] = !!enabled;
+      syncLevelToggleInputs();
+      syncPromptTemplateForLevels();
+      closeMenu();
+      clearActive();
+      if (!step2El.classList.contains("hidden") && state.review) {
+        renderReview();
+      }
+      saveState();
+    }
+
+    function buildModelCardHtml(model, run = null, context = "step1", totalEstimatedCost = 0) {
+      const metrics = run ? buildSummaryMetrics(run) : [];
+      if (run && totalEstimatedCost > 0 && typeof run.estimated_cost_usd === "number" && !Number.isNaN(run.estimated_cost_usd)) {
+        metrics.push(`${((run.estimated_cost_usd / totalEstimatedCost) * 100).toFixed(1)}%`);
+      }
+      const summaryLine = metrics.length
+        ? metrics.join(" · ")
+        : (isModelSelected(model) ? "Activ pentru analiză" : "Debifat");
+
+      return `
+        <section class="summary-card" data-model-card-context="${escapeHtml(context)}">
+          <div class="summary-card-head">
+            <input class="summary-model-toggle" type="checkbox" data-model-toggle="${escapeHtml(model)}" ${isModelSelected(model) ? "checked" : ""} />
+            <h3>${escapeHtml(model)}</h3>
+          </div>
+          <div class="summary-line">${escapeHtml(summaryLine)}</div>
+        </section>
+      `;
+    }
+
+    function bindModelToggleListeners(scope = document) {
+      scope.querySelectorAll("[data-model-toggle]").forEach((input) => {
+        input.addEventListener("click", (event) => {
+          event.stopPropagation();
+        });
+        input.addEventListener("keydown", (event) => {
+          event.stopPropagation();
+        });
+        input.addEventListener("change", (event) => {
+          event.stopPropagation();
+          setModelSelected(input.dataset.modelToggle, !!event.target.checked);
+        });
+      });
+    }
+
+    function renderModelSelectors() {
+      const availableModels = getAvailableModels();
+      const activeCount = normalizeSelectedModels(state.selectedModels).length;
+      if (step1ModelPickerEl) {
+        step1ModelPickerEl.innerHTML = availableModels.map((model) => buildModelCardHtml(model, null, "step1")).join("");
+        bindModelToggleListeners(step1ModelPickerEl);
+      }
+      if (step1ModelCountEl) {
+        step1ModelCountEl.textContent = `${activeCount} modele active`;
+      }
+    }
+
+    function getBulkArticles() {
+      return Array.isArray(state.bulkCache?.articles) ? state.bulkCache.articles : [];
+    }
+
+    function getCurrentBulkArticle() {
+      return getBulkArticles()[state.bulkCurrentIndex] || null;
+    }
+
+    function syncBulkUi() {
+      const articles = getBulkArticles();
+      const total = articles.length;
+      const completed = Number(state.bulkStatus?.completed || 0);
+      const currentArticle = getCurrentBulkArticle();
+
+      bulkNavEl.classList.toggle("hidden", !state.bulkMode || !total);
+      bulkProgressEl.classList.toggle("hidden", !state.bulkMode || !total);
+
+      if (state.bulkMode && total) {
+        bulkCounterEl.textContent = `${state.bulkCurrentIndex + 1} / ${total}`;
+        bulkPrevButtonEl.disabled = state.bulkCurrentIndex <= 0;
+        bulkNextButtonEl.disabled = state.bulkCurrentIndex >= total - 1;
+        bulkProgressBarEl.style.width = `${Math.round((completed / total) * 100)}%`;
+      } else {
+        bulkProgressBarEl.style.width = "0%";
+      }
+
+      voteButtonEl.disabled = !state.review?.runs?.length || (currentArticle && currentArticle.status !== "completed");
+      redrawButtonEl.disabled = !state.review?.runs?.length || (currentArticle && currentArticle.status !== "completed");
+      undoButtonEl.disabled = !state.review?.runs?.length || state.history.length === 0 || (currentArticle && currentArticle.status !== "completed");
+    }
+
+    async function persistCurrentBulkArticleState() {
+      if (!state.bulkMode) return;
+      const article = getCurrentBulkArticle();
+      if (!article || article.status !== "completed" || !state.review) return;
+      article.operator_state = {
+        runStates: getSerializableRunStates(),
+        best_model: state.review.best_model || null
+      };
+      try {
+        await fetch("/api/bulk-article-state", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            index: state.bulkCurrentIndex,
+            runStates: article.operator_state.runStates,
+            best_model: article.operator_state.best_model
+          })
+        });
+      } catch {
+      }
+    }
+
+    function renderBulkArticlePlaceholder(article) {
+      state.review = null;
+      state.runStates = {};
+      state.history = [];
+      if (!article) {
+        reviewSubtitleEl.textContent = "Pasul 2: aștept articolele procesate în bulk.";
+        reviewSummaryEl.innerHTML = "";
+        reviewResultsEl.innerHTML = `<div class="loading-review">Pornesc bulk process și pregătesc cache-ul local...</div>`;
+      } else if (article.status === "pending") {
+        reviewSubtitleEl.textContent = `Știrea ${state.bulkCurrentIndex + 1}/${getBulkArticles().length}: procesare în fundal.`;
+        reviewSummaryEl.innerHTML = "";
+        reviewResultsEl.innerHTML = `<div class="loading-review">Procesez în fundal articolul din ${escapeHtml(article.url)}...</div>`;
+      } else if (article.status === "error") {
+        reviewSubtitleEl.textContent = `Știrea ${state.bulkCurrentIndex + 1}/${getBulkArticles().length}: eroare la procesare.`;
+        reviewSummaryEl.innerHTML = "";
+        reviewResultsEl.innerHTML = `<div class="loading-review">Nu am putut procesa ${escapeHtml(article.url)}.<br><br>${escapeHtml(article.error || "Eroare necunoscută.")}</div>`;
+      }
+      syncBulkUi();
+      saveState();
+    }
+
+    function loadBulkArticle(index) {
+      const articles = getBulkArticles();
+      if (!articles.length) return;
+      state.bulkCurrentIndex = Math.max(0, Math.min(index, articles.length - 1));
+      const article = getCurrentBulkArticle();
+      if (!article || article.status !== "completed" || !article.review) {
+        renderBulkArticlePlaceholder(article);
+        return;
+      }
+      state.review = article.review;
+      state.review.best_model = article.operator_state?.best_model || state.review.best_model;
+      state.runStates = article.operator_state?.runStates || {};
+      state.history = [];
+      step1El.classList.add("hidden");
+      step2El.classList.remove("hidden");
+      renderReview();
+    }
+
+    function getFirstCompletedBulkIndex() {
+      return getBulkArticles().findIndex((article) => article.status === "completed" && article.review);
+    }
+
+async function refreshBulkStatus() {
+  if (!state.bulkMode) return;
+  const response = await fetch("/api/bulk-status");
+  const data = await response.json();
+  state.bulkStatus = data.job || null;
+  state.bulkCache = data.cache || { articles: [], meta: {} };
+
+  const currentArticle = getCurrentBulkArticle();
+  if (!currentArticle) {
+    const firstCompletedIndex = getFirstCompletedBulkIndex();
+    if (firstCompletedIndex !== -1) loadBulkArticle(firstCompletedIndex);
+    else renderBulkArticlePlaceholder(null);
+  } else if (currentArticle.status === "completed" && currentArticle.review) {
+    if (!state.review || state.review.run_id !== currentArticle.review.run_id) {
+      loadBulkArticle(state.bulkCurrentIndex);
+    } else {
+      syncBulkUi();
+    }
+  } else {
+    renderBulkArticlePlaceholder(currentArticle);
+  }
+
+  if (state.bulkStatus?.running) {
+    if (state.bulkPollTimer) window.clearTimeout(state.bulkPollTimer);
+    state.bulkPollTimer = window.setTimeout(() => {
+      refreshBulkStatus().catch(() => {});
+    }, 1200);
+  } else if (state.bulkPollTimer) {
+    window.clearTimeout(state.bulkPollTimer);
+    state.bulkPollTimer = null;
+  }
+}
+
+async function startBulkProcess() {
+  const prompt = promptEl.value.trim();
+  const selectedModels = normalizeSelectedModels(state.selectedModels);
+  if (!selectedModels.length) {
+    setStep1Status("Bifează cel puțin un model.", "error");
+    return;
+  }
+
+  analyzeButtonEl.disabled = true;
+  bulkProcessButtonEl.disabled = true;
+  bulkProcessButtonStep2El.disabled = true;
+  topNextButtonEl.disabled = true;
+  setStep1Status("Pornesc procesarea în fundal din todo.txt...", "");
+  step1El.classList.add("hidden");
+  step2El.classList.remove("hidden");
+
+  state.bulkMode = true;
+  state.bulkCurrentIndex = 0;
+  state.bulkCache = { articles: [], meta: {} };
+  state.bulkStatus = { running: true, total: 0, completed: 0, failed: 0 };
+  renderBulkArticlePlaceholder(null);
+
+  try {
+    const response = await fetch("/api/bulk-process", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt, models: selectedModels, levels: getRequestedLevels() })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Nu am putut porni bulk process.");
+    state.bulkStatus = data.job || null;
+    state.bulkCache = data.cache || { articles: [], meta: {} };
+    loadBulkArticle(0);
+    setStep1Status("Bulk process a pornit.", "success");
+    refreshBulkStatus().catch(() => {});
+  } catch (error) {
+    state.bulkMode = false;
+    step2El.classList.add("hidden");
+    step1El.classList.remove("hidden");
+    setStep1Status(error.message || "Nu am putut porni bulk process.", "error");
+  } finally {
+    analyzeButtonEl.disabled = false;
+    bulkProcessButtonEl.disabled = false;
+    bulkProcessButtonStep2El.disabled = false;
+    topNextButtonEl.disabled = false;
+    saveState();
+  }
+}
+
+    function openVoteModal() {
+      if (!state.review?.runs?.length) return;
+      closeMenu();
+      clearActive();
+      voteModalGridEl.innerHTML = (state.review.runs || []).map((run) => {
+        const runKey = getRunKey(run.model);
+        const runState = getRunState(runKey);
+        const suggestions = (runState.materializedSuggestions || []).slice().sort((a, b) => a.originalStart - b.originalStart);
+        return `
+          <section class="vote-column">
+            <div class="vote-column-head">
+              <strong>${escapeHtml(run.model)}</strong>
+              <button
+                class="vote-best ${state.review.best_model === run.model ? "active" : ""} ${state.votePendingModel === run.model ? "loading" : ""}"
+                data-vote-model="${escapeHtml(run.model)}"
+                ${state.votePendingModel ? "disabled" : ""}
+              >${state.votePendingModel === run.model ? "Saving" : "BEST"}</button>
+            </div>
+            <div class="vote-list">
+              ${suggestions.length ? suggestions.map((item) => `
+                <div class="vote-pair">
+                  <div class="vote-card">
+                    <div class="vote-card-original">${renderSegmentInner(item, "original")}</div>
+                    <div class="vote-card-proposed">${renderSegmentInner(item, "proposed")}</div>
+                  </div>
+                  <div class="vote-reason"><strong>Nivel ${item.level}:</strong> ${escapeHtml(item.reason || "")}</div>
+                </div>
+              `).join("") : `<div class="vote-pair"><div class="vote-reason">Nu sunt sugestii.</div></div>`}
+            </div>
+          </section>
+        `;
+      }).join("");
+      voteModalBackdropEl.classList.add("visible");
+      voteModalBackdropEl.setAttribute("aria-hidden", "false");
+      voteModalGridEl.querySelectorAll("[data-vote-model]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const bestModel = button.dataset.voteModel;
+          if (!bestModel || !state.review?.run_id || state.votePendingModel) return;
+          state.votePendingModel = bestModel;
+          openVoteModal();
+          try {
+            const response = await fetch("/api/vote", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ run_id: state.review.run_id, best_model: bestModel })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || "Nu am putut salva votul.");
+            state.review.best_model = bestModel;
+            saveState();
+            persistCurrentBulkArticleState();
+            closeVoteModal();
+          } catch (error) {
+            state.votePendingModel = null;
+            openVoteModal();
+            window.alert(error.message || "Nu am putut salva votul.");
+          }
+        });
+      });
+    }
+
+    function getRunState(runKey) {
+      if (!state.runStates[runKey]) {
+        state.runStates[runKey] = { materializedSuggestions: [] };
+      }
+      return state.runStates[runKey];
+    }
+
+    function setGlobalViewMode(mode) {
+      state.globalViewMode = mode === "original" ? "original" : "suggestii";
+      if (state.globalViewMode === "original") {
+        closeMenu();
+        clearActive();
+        closeEmptyModal();
+      }
+      syncGlobalViewToggle();
+      saveState();
+      renderReview();
+    }
+
+    function getRunByKey(runKey) {
+      return (state.review?.runs || []).find((run) => getRunKey(run.model) === runKey) || null;
+    }
+
+    function materializeSuggestions(originalText, rawSuggestions) {
+      const takenRanges = [];
+      const materialized = [];
+      let scanStart = 0;
+      const quoteRanges = [];
+
+      function buildQuoteRanges(text) {
+        const ranges = [];
+        const quoteChars = new Set(['"', '„', '”', '“', '«', '»']);
+        let openIndex = null;
+        for (let idx = 0; idx < text.length; idx += 1) {
+          const char = text[idx];
+          if (!quoteChars.has(char)) continue;
+          if (openIndex === null) openIndex = idx;
+          else {
+            ranges.push({ start: openIndex, end: idx + 1 });
+            openIndex = null;
+          }
+        }
+        return ranges;
+      }
+
+      function intersectsQuote(start, end) {
+        return quoteRanges.some((range) => start < range.end && end > range.start);
+      }
+
+      function tokenizeForDiff(value) {
+        return value.match(/(\s+|[^\p{L}\p{N}\s]+|[\p{L}\p{N}]+)/gu) || [];
+      }
+
+      function isWordToken(token) {
+        return /[\p{L}\p{N}]/u.test(token);
+      }
+
+      function buildTokenPositions(tokens) {
+        const positions = [];
+        let cursor = 0;
+        tokens.forEach((token) => {
+          positions.push({ start: cursor, end: cursor + token.length });
+          cursor += token.length;
+        });
+        return positions;
+      }
+
+      function trimSuggestionWindow(originalSnippet, proposedSnippet) {
+        const originalTokens = tokenizeForDiff(originalSnippet);
+        const proposedTokens = tokenizeForDiff(proposedSnippet);
+        if (!originalTokens.length || !proposedTokens.length) return null;
+
+        let prefix = 0;
+        const prefixMax = Math.min(originalTokens.length, proposedTokens.length);
+        while (prefix < prefixMax && originalTokens[prefix] === proposedTokens[prefix]) prefix += 1;
+
+        let suffix = 0;
+        while (
+          suffix < originalTokens.length - prefix &&
+          suffix < proposedTokens.length - prefix &&
+          originalTokens[originalTokens.length - 1 - suffix] === proposedTokens[proposedTokens.length - 1 - suffix]
+        ) {
+          suffix += 1;
+        }
+
+        const originalChangedStart = prefix;
+        const originalChangedEnd = originalTokens.length - suffix;
+        const proposedChangedEnd = proposedTokens.length - suffix;
+        if (originalChangedStart >= originalChangedEnd && prefix >= proposedChangedEnd) return null;
+
+        let windowStart = originalChangedStart;
+        let windowEndOriginal = originalChangedEnd;
+        let windowEndProposed = proposedChangedEnd;
+
+        if (windowStart > 0) {
+          let scan = windowStart - 1;
+          while (scan >= 0 && !isWordToken(originalTokens[scan])) scan -= 1;
+          if (scan >= 0) {
+            while (scan > 0 && !isWordToken(originalTokens[scan - 1])) scan -= 1;
+            windowStart = scan;
+          }
+        }
+
+        if (suffix > 0) {
+          let offsetIntoSuffix = 0;
+          while (offsetIntoSuffix < suffix && !isWordToken(originalTokens[originalChangedEnd + offsetIntoSuffix])) {
+            offsetIntoSuffix += 1;
+          }
+          if (offsetIntoSuffix < suffix) {
+            windowEndOriginal = Math.min(originalTokens.length, originalChangedEnd + offsetIntoSuffix + 1);
+            windowEndProposed = Math.min(proposedTokens.length, proposedChangedEnd + offsetIntoSuffix + 1);
+          }
+        }
+
+        const originalPositions = buildTokenPositions(originalTokens);
+        const proposedPositions = buildTokenPositions(proposedTokens);
+        const originalStartOffset = originalPositions[windowStart]?.start ?? 0;
+        const originalEndOffset = windowEndOriginal > 0 ? (originalPositions[windowEndOriginal - 1]?.end ?? originalSnippet.length) : 0;
+        const proposedStartOffset = proposedPositions[windowStart]?.start ?? 0;
+        const proposedEndOffset = windowEndProposed > 0 ? (proposedPositions[windowEndProposed - 1]?.end ?? proposedSnippet.length) : 0;
+
+        const originalText = originalSnippet.slice(originalStartOffset, originalEndOffset);
+        const proposedText = proposedSnippet.slice(proposedStartOffset, proposedEndOffset);
+        if (!originalText || originalText === proposedText) return null;
+        return { originalStartOffset, originalText, proposedText };
+      }
+
+      quoteRanges.push(...buildQuoteRanges(originalText));
+
+      rawSuggestions.forEach((item, index) => {
+        const originalSnippet = item.original || "";
+        const proposedSnippet = item.proposed || "";
+        if (!originalSnippet || originalSnippet === proposedSnippet) return;
+
+        let start = originalText.indexOf(originalSnippet, scanStart);
+        if (start === -1) start = originalText.indexOf(originalSnippet);
+        if (start === -1) return;
+
+        const level = Number(item.level);
+        if (![1, 2].includes(level)) return;
+
+        const trimmed = trimSuggestionWindow(originalSnippet, proposedSnippet);
+        if (!trimmed) return;
+
+        const groupStart = start + trimmed.originalStartOffset;
+        const groupEnd = groupStart + trimmed.originalText.length;
+        if (intersectsQuote(groupStart, groupEnd)) return;
+
+        const overlaps = takenRanges.some((range) => groupStart < range.end && groupEnd > range.start);
+        if (overlaps) return;
+
+        materialized.push({
+          id: item.id || `s${index + 1}`,
+          level,
+          reason: item.reason || "",
+          original: trimmed.originalText,
+          proposed: trimmed.proposedText,
+          status: "pending",
+          originalStart: groupStart,
+          originalEnd: groupEnd
+        });
+        takenRanges.push({ start: groupStart, end: groupEnd });
+        takenRanges.sort((a, b) => a.start - b.start);
+        scanStart = Math.max(scanStart, groupEnd);
+      });
+
+      materialized.sort((a, b) => a.originalStart - b.originalStart);
+      return materialized;
+    }
+
+    function buildProposedText(text, suggestions) {
+      let result = "";
+      let cursor = 0;
+      suggestions.forEach((item) => {
+        result += text.slice(cursor, item.originalStart);
+        item.proposedStart = result.length;
+        result += item.status === "approved" ? item.proposed : item.original;
+        item.proposedEnd = result.length;
+        cursor = item.originalEnd;
+      });
+      result += text.slice(cursor);
+      return result;
+    }
+
+    function tokenizeInlineDiff(value) {
+      return value.match(/(\s+|[^\p{L}\p{N}\s]+|[\p{L}\p{N}]+)/gu) || [];
+    }
+
+    function buildInlineDiffOps(originalText, proposedText) {
+      const a = tokenizeInlineDiff(originalText);
+      const b = tokenizeInlineDiff(proposedText);
+      const dp = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+      for (let i = a.length - 1; i >= 0; i -= 1) {
+        for (let j = b.length - 1; j >= 0; j -= 1) {
+          dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+        }
+      }
+      const ops = [];
+      let i = 0;
+      let j = 0;
+      function push(type, text) {
+        const last = ops[ops.length - 1];
+        if (last && last.type === type) last.text += text;
+        else ops.push({ type, text });
+      }
+      while (i < a.length && j < b.length) {
+        if (a[i] === b[j]) {
+          push("equal", a[i]); i += 1; j += 1;
+        } else if (dp[i + 1][j] >= dp[i][j + 1]) {
+          push("delete", a[i]); i += 1;
+        } else {
+          push("insert", b[j]); j += 1;
+        }
+      }
+      while (i < a.length) { push("delete", a[i]); i += 1; }
+      while (j < b.length) { push("insert", b[j]); j += 1; }
+      return ops;
+    }
+
+    function renderSegmentInner(item, type) {
+      return buildInlineDiffOps(item.original, item.proposed).map((op) => {
+        if (op.type === "equal") return escapeHtml(op.text);
+        if (type === "original" && op.type === "delete") return `<span class="segment-delete">${escapeHtml(op.text)}</span>`;
+        if (type === "proposed" && op.type === "insert") return `<span class="segment-insert">${escapeHtml(op.text)}</span>`;
+        return "";
+      }).join("");
+    }
+
+    function renderSegments(container, fullText, suggestions, type, runKey) {
+      const interactive = state.globalViewMode !== "original";
+      const paragraphParts = [];
+      const paragraphRegex = /(?:^|\n)([\s\S]*?)(?=\n\s*\n|$)/g;
+      let match;
+      while ((match = paragraphRegex.exec(fullText)) !== null) {
+        const rawParagraphText = match[1];
+        const baseStart = match.index === 0 ? 0 : match.index + 1;
+        const leadingWhitespace = (rawParagraphText.match(/^\s*/) || [""])[0].length;
+        const trailingWhitespace = (rawParagraphText.match(/\s*$/) || [""])[0].length;
+        const rawEndIndex = rawParagraphText.length - trailingWhitespace;
+        const paragraphText = rawParagraphText.slice(leadingWhitespace, rawEndIndex);
+        if (!paragraphText) continue;
+        const paragraphStart = baseStart + leadingWhitespace;
+        const paragraphEnd = paragraphStart + paragraphText.length;
+        paragraphParts.push({ paragraphText, paragraphStart, paragraphEnd });
+      }
+
+      const html = paragraphParts.map(({ paragraphText, paragraphStart, paragraphEnd }) => {
+        const paragraphItems = suggestions.filter((item) => {
+          const start = type === "original" ? item.originalStart : item.proposedStart;
+          const end = type === "original" ? item.originalEnd : item.proposedEnd;
+          return start < paragraphEnd && end > paragraphStart;
+        });
+        const visibleParagraphItems = interactive
+          ? paragraphItems.filter((item) => state.levelFilters[item.level] && item.status === "pending")
+          : [];
+        let paragraphHtml = "";
+        let cursor = paragraphStart;
+        paragraphItems.forEach((item) => {
+          const start = type === "original" ? item.originalStart : item.proposedStart;
+          const end = type === "original" ? item.originalEnd : item.proposedEnd;
+          paragraphHtml += escapeHtml(fullText.slice(cursor, start));
+          if (interactive && state.levelFilters[item.level] && item.status === "pending") {
+            paragraphHtml += `<span class="segment has-suggestion level-${item.level}" data-run-key="${runKey}" data-id="${item.id}" data-type="${type}">${renderSegmentInner(item, type)}</span>`;
+          } else {
+            paragraphHtml += escapeHtml(fullText.slice(start, end));
+          }
+          cursor = end;
+        });
+        paragraphHtml += escapeHtml(fullText.slice(cursor, paragraphEnd));
+        return `<div class="${visibleParagraphItems.length ? "paragraph" : "paragraph plain"}">${paragraphHtml}</div>`;
+      }).join("");
+      container.innerHTML = html;
+    }
+
+    function buildPreviewParagraphsHtml(text) {
+      return String(text || "")
+        .split(/\n\s*\n/)
+        .map((paragraph) => paragraph.trim())
+        .filter(Boolean)
+        .map((paragraph) => `<p class="preview-paragraph">${escapeHtml(paragraph).replace(/\n/g, "<br>")}</p>`)
+        .join("");
+    }
+
+    function renderPreviewHtml(container, title, contentHtml, fallbackText) {
+      const bodyHtml = (contentHtml || "").trim() || buildPreviewParagraphsHtml(fallbackText);
+      const titleHtml = title ? `<h1 class="preview-title">${escapeHtml(title)}</h1>` : "";
+      container.innerHTML = `
+        <div class="news-preview-shell">
+          <div class="news-preview">
+            <section class="section s-article">
+              <div class="art-top">
+                ${titleHtml}
+              </div>
+              <div class="art-content">${bodyHtml}</div>
+            </section>
+          </div>
+        </div>
+      `;
+    }
+
+    function splitPreviewParagraphs(text) {
+      return String(text || "")
+        .split(/\n\s*\n/)
+        .map((paragraph) => paragraph.trim())
+        .filter(Boolean);
+    }
+
+    function normalizePreviewText(text) {
+      return String(text || "").replace(/\s+/g, " ").trim();
+    }
+
+    function applyApprovedSuggestionsToText(baseText, suggestions, baseStartOffset) {
+      const approvedSuggestions = (suggestions || [])
+        .filter((item) => item.status === "approved")
+        .slice()
+        .sort((a, b) => a.originalStart - b.originalStart);
+      if (!approvedSuggestions.length) return baseText;
+
+      let result = "";
+      let cursor = 0;
+      approvedSuggestions.forEach((item) => {
+        const localStart = Math.max(0, item.originalStart - baseStartOffset);
+        const localEnd = Math.max(localStart, item.originalEnd - baseStartOffset);
+        result += baseText.slice(cursor, localStart);
+        result += item.proposed;
+        cursor = localEnd;
+      });
+      result += baseText.slice(cursor);
+      return result;
+    }
+
+    function rewriteTextNodesPreservingMarkup(rootNode, updatedText) {
+      const textNodes = [];
+      const walker = document.createTreeWalker(rootNode, NodeFilter.SHOW_TEXT);
+      let currentNode = walker.nextNode();
+      while (currentNode) {
+        textNodes.push(currentNode);
+        currentNode = walker.nextNode();
+      }
+      if (!textNodes.length) {
+        rootNode.textContent = updatedText;
+        return;
+      }
+      if (textNodes.length === 1) {
+        textNodes[0].textContent = updatedText;
+        return;
+      }
+
+      const originalParts = textNodes.map((node) => node.textContent || "");
+      const totalLength = originalParts.reduce((sum, part) => sum + part.length, 0);
+      if (!totalLength) {
+        textNodes[0].textContent = updatedText;
+        for (let i = 1; i < textNodes.length; i += 1) textNodes[i].textContent = "";
+        return;
+      }
+
+      let cursor = 0;
+      textNodes.forEach((node, index) => {
+        const originalLength = originalParts[index].length;
+        if (index === textNodes.length - 1) {
+          node.textContent = updatedText.slice(cursor);
+          return;
+        }
+        const sliceLength = Math.round((originalLength / totalLength) * updatedText.length);
+        node.textContent = updatedText.slice(cursor, cursor + sliceLength);
+        cursor += sliceLength;
+      });
+    }
+
+    function replaceTextInNodePreservingMarkup(rootNode, originalText, proposedText) {
+      const target = String(originalText || "");
+      if (!target) return false;
+
+      const textNodes = [];
+      const walker = document.createTreeWalker(rootNode, NodeFilter.SHOW_TEXT);
+      let currentNode = walker.nextNode();
+      while (currentNode) {
+        textNodes.push(currentNode);
+        currentNode = walker.nextNode();
+      }
+      if (!textNodes.length) return false;
+
+      const fullText = textNodes.map((node) => node.textContent || "").join("");
+      const start = fullText.indexOf(target);
+      if (start === -1) return false;
+      const end = start + target.length;
+
+      let cursor = 0;
+      let inserted = false;
+      textNodes.forEach((node) => {
+        const text = node.textContent || "";
+        const nodeStart = cursor;
+        const nodeEnd = cursor + text.length;
+        cursor = nodeEnd;
+
+        if (nodeEnd <= start || nodeStart >= end) {
+          return;
+        }
+
+        const localStart = Math.max(0, start - nodeStart);
+        const localEnd = Math.min(text.length, end - nodeStart);
+        const prefix = text.slice(0, localStart);
+        const suffix = text.slice(localEnd);
+
+        if (!inserted) {
+          node.textContent = prefix + proposedText + suffix;
+          inserted = true;
+        } else {
+          node.textContent = prefix + suffix;
+        }
+      });
+
+      return inserted;
+    }
+
+    function buildProposedPreviewHtml(sourceHtml, originalBodyText, suggestions, bodyStartOffset) {
+      const rawHtml = String(sourceHtml || "").trim();
+      if (!rawHtml) return "";
+
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = rawHtml;
+      const textBlocks = Array.from(wrapper.children).filter((node) => {
+        const tag = (node.tagName || "").toLowerCase();
+        const cls = node.className || "";
+        if (["script", "style"].includes(tag)) return false;
+        if (tag === "figure") return false;
+        if (/\b(mobile-ad|desktop-ad|links-shortcuts|info-news|list-tags)\b/.test(cls)) return false;
+        return true;
+      });
+
+      const approvedBodySuggestions = (suggestions || [])
+        .filter((item) => item.status === "approved" && Number(item.originalEnd) > bodyStartOffset)
+        .slice()
+        .sort((a, b) => a.originalStart - b.originalStart);
+
+      approvedBodySuggestions.forEach((item) => {
+        const exactMatches = textBlocks.filter((node) => (node.textContent || "").includes(item.original));
+        if (exactMatches.length === 1) {
+          replaceTextInNodePreservingMarkup(exactMatches[0], item.original, item.proposed);
+          return;
+        }
+
+        const normalizedOriginal = normalizePreviewText(item.original);
+        const normalizedMatches = textBlocks.filter((node) => normalizePreviewText(node.textContent || "").includes(normalizedOriginal));
+        if (normalizedMatches.length === 1) {
+          rewriteTextNodesPreservingMarkup(
+            normalizedMatches[0],
+            (normalizedMatches[0].textContent || "").replace(item.original, item.proposed)
+          );
+        }
+      });
+
+      return wrapper.innerHTML.trim();
+    }
+
+    function hasApprovedSuggestions(suggestions) {
+      return (suggestions || []).some((item) => item.status === "approved");
+    }
+
+    function hasApprovedBodySuggestions(suggestions, bodyStartOffset) {
+      return (suggestions || []).some((item) => item.status === "approved" && Number(item.originalEnd) > bodyStartOffset);
+    }
+
+    function stripLeadingTitle(text, title) {
+      const normalizedText = String(text || "");
+      const normalizedTitle = String(title || "").trim();
+      if (!normalizedTitle) return normalizedText;
+      const prefix = `${normalizedTitle}\n\n`;
+      return normalizedText.startsWith(prefix) ? normalizedText.slice(prefix.length) : normalizedText;
+    }
+
+    function splitPreviewDocument(text, fallbackTitle = "") {
+      const normalizedText = String(text || "");
+      const match = normalizedText.match(/^([\s\S]*?)\n\s*\n([\s\S]*)$/);
+      if (match) {
+        return {
+          title: match[1].trim(),
+          body: match[2].trim()
+        };
+      }
+      return {
+        title: String(fallbackTitle || "").trim(),
+        body: stripLeadingTitle(normalizedText, fallbackTitle).trim()
+      };
+    }
+
+    function clearActive() {
+      document.querySelectorAll(".segment.active").forEach((node) => node.classList.remove("active"));
+    }
+
+    function setActive(runKey, id) {
+      clearActive();
+      document.querySelectorAll(`.segment[data-run-key="${runKey}"][data-id="${id}"]`).forEach((node) => node.classList.add("active"));
+      state.activeRunKey = runKey;
+      state.activeMenuId = id;
+    }
+
+    function getVisibleSuggestions(runKey) {
+      if (state.globalViewMode === "original") return [];
+      const runState = getRunState(runKey);
+      return (runState.materializedSuggestions || []).filter((item) => state.levelFilters[item.level] && item.status === "pending");
+    }
+
+    function getAllVisibleSuggestions() {
+      return (state.review?.runs || []).flatMap((run) => {
+        const runKey = getRunKey(run.model);
+        return getVisibleSuggestions(runKey).map((item) => ({ runKey, id: item.id }));
+      });
+    }
+
+    function scrollSuggestionIntoView(anchorEl) {
+      if (!anchorEl) return;
+      const rect = anchorEl.getBoundingClientRect();
+      const targetTop = window.scrollY + rect.top - (window.innerHeight / 2) + (rect.height / 2);
+      const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      window.scrollTo({ top: Math.max(0, Math.min(targetTop, maxScroll)), behavior: "smooth" });
+    }
+
+    function afterScrollSettles(callback) {
+      if (state.scrollSettleTimer) window.clearTimeout(state.scrollSettleTimer);
+      const onScroll = () => {
+        if (state.scrollSettleTimer) window.clearTimeout(state.scrollSettleTimer);
+        state.scrollSettleTimer = window.setTimeout(() => {
+          window.removeEventListener("scroll", onScroll, true);
+          state.scrollSettleTimer = null;
+          callback();
+        }, 120);
+      };
+      window.addEventListener("scroll", onScroll, true);
+      onScroll();
+    }
+
+    function rectsOverlap(a, b) {
+      return !(a.right <= b.left || a.left >= b.right || a.bottom <= b.top || a.top >= b.bottom);
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function openMenu(runKey, id, anchorEl, sourceType) {
+      const item = getRunState(runKey).materializedSuggestions.find((entry) => entry.id === id);
+      if (!item || item.status !== "pending" || !state.levelFilters[item.level]) return;
+      setActive(runKey, id);
+      const visibleSuggestions = getVisibleSuggestions(runKey);
+      const suggestionIndex = visibleSuggestions.findIndex((entry) => entry.id === id);
+      menuEl.innerHTML = `
+        <div class="menu-head">
+          <div class="menu-head-row">
+            <div class="menu-count">${suggestionIndex + 1}/${visibleSuggestions.length}</div>
+            <div class="badge level-${item.level}">
+              <span class="dot l${item.level}"></span>Nivel ${item.level}
+            </div>
+          </div>
+        </div>
+        <div class="menu-body">
+          <div class="menu-label">Motiv</div>
+          <p class="menu-reason"><strong>Nivel ${item.level}:</strong> ${escapeHtml(item.reason)}</p>
+          <div class="menu-actions">
+            <button class="approve" data-menu-action="approve" data-run-key="${runKey}" data-id="${item.id}">Approve (Space)</button>
+            <button class="reject" data-menu-action="reject" data-run-key="${runKey}" data-id="${item.id}">Reject (Esc)</button>
+          </div>
+        </div>
+      `;
+      menuEl.classList.add("visible");
+      menuEl.setAttribute("aria-hidden", "false");
+
+      const anchorRect = anchorEl.getBoundingClientRect();
+      const counterpartType = sourceType === "proposed" ? "original" : "proposed";
+      const counterpartEl = document.querySelector(`.segment[data-run-key="${runKey}"][data-id="${id}"][data-type="${counterpartType}"]`);
+      const counterpartRect = counterpartEl ? counterpartEl.getBoundingClientRect() : null;
+      const menuRect = menuEl.getBoundingClientRect();
+      const gap = 12;
+      const viewportPadding = 12;
+      const focusRect = counterpartRect ? {
+        left: Math.min(anchorRect.left, counterpartRect.left),
+        top: Math.min(anchorRect.top, counterpartRect.top),
+        right: Math.max(anchorRect.right, counterpartRect.right),
+        bottom: Math.max(anchorRect.bottom, counterpartRect.bottom),
+        width: Math.max(anchorRect.right, counterpartRect.right) - Math.min(anchorRect.left, counterpartRect.left),
+        height: Math.max(anchorRect.bottom, counterpartRect.bottom) - Math.min(anchorRect.top, counterpartRect.top)
+      } : anchorRect;
+
+      const left = clamp(focusRect.left + (focusRect.width - menuRect.width) / 2, viewportPadding, window.innerWidth - menuRect.width - viewportPadding);
+      const top = clamp(focusRect.top - menuRect.height - gap, viewportPadding, window.innerHeight - menuRect.height - viewportPadding);
+      const topRect = { left, top, right: left + menuRect.width, bottom: top + menuRect.height };
+      const finalTop = rectsOverlap(topRect, focusRect)
+        ? clamp(focusRect.bottom + gap, viewportPadding, window.innerHeight - menuRect.height - viewportPadding)
+        : top;
+
+      menuEl.style.left = `${window.scrollX + left}px`;
+      menuEl.style.top = `${window.scrollY + finalTop}px`;
+
+      menuEl.querySelectorAll("[data-menu-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          updateSuggestion(
+            button.dataset.runKey,
+            button.dataset.id,
+            button.dataset.menuAction === "approve" ? "approved" : "rejected"
+          );
+        });
+      });
+    }
+
+    function closeMenu() {
+      menuEl.classList.remove("visible");
+      menuEl.setAttribute("aria-hidden", "true");
+      state.activeMenuId = null;
+      state.activeRunKey = null;
+    }
+
+    function canGoToPreviousBulkArticle() {
+      return state.bulkMode && state.bulkCurrentIndex > 0;
+    }
+
+    function canGoToNextBulkArticle() {
+      return state.bulkMode && state.bulkCurrentIndex < getBulkArticles().length - 1;
+    }
+
+    async function goToBulkArticleFromModal(offset) {
+      const nextIndex = state.bulkCurrentIndex + offset;
+      const articles = getBulkArticles();
+      if (!state.bulkMode || nextIndex < 0 || nextIndex >= articles.length) return;
+      await persistCurrentBulkArticleState();
+      closeEmptyModal();
+      loadBulkArticle(nextIndex);
+    }
+
+    async function goToNextBulkArticleFromModal() {
+      await goToBulkArticleFromModal(1);
+    }
+
+    async function goToPreviousBulkArticleFromModal() {
+      await goToBulkArticleFromModal(-1);
+    }
+
+    function getSuggestionCompletionSummary() {
+      const suggestions = Object.values(state.runStates).flatMap((runState) => runState.materializedSuggestions || []);
+      const relevant = suggestions.filter((item) => state.levelFilters[item.level]);
+      return {
+        total: relevant.length,
+        pending: relevant.filter((item) => item.status === "pending").length,
+        approved: relevant.filter((item) => item.status === "approved").length,
+        rejected: relevant.filter((item) => item.status === "rejected").length
+      };
+    }
+
+    function showEmptyModal() {
+      const summary = getSuggestionCompletionSummary();
+      const isCompletedArticle = summary.total > 0 && summary.pending === 0;
+      const articles = getBulkArticles();
+      const canGoPrev = canGoToPreviousBulkArticle();
+      const canGoNext = canGoToNextBulkArticle();
+
+      emptyModalTitleEl.textContent = isCompletedArticle ? "Știrea a fost corectată" : "Nu sunt sugestii de editare";
+      emptyModalMessageEl.textContent = isCompletedArticle
+        ? `${summary.approved} sugestii acceptate, ${summary.rejected} sugestii respinse.`
+        : "Modelul nu a propus modificări pentru textul curent. Poți reveni la pasul 1 și ajusta inputul sau promptul.";
+
+      emptyModalBulkNavEl.classList.toggle("hidden", !state.bulkMode || !articles.length);
+      emptyModalPrevButtonEl.disabled = !canGoPrev;
+      emptyModalNextButtonEl.disabled = !canGoNext;
+      emptyModalCounterEl.textContent = `${state.bulkCurrentIndex + 1} / ${articles.length || 1}`;
+
+      emptyModalBackdropEl.classList.add("visible");
+      emptyModalBackdropEl.setAttribute("aria-hidden", "false");
+      (canGoNext ? emptyModalNextButtonEl : emptyModalResetButtonEl).focus();
+    }
+
+    function closeEmptyModal() {
+      emptyModalBackdropEl.classList.remove("visible");
+      emptyModalBackdropEl.setAttribute("aria-hidden", "true");
+    }
+
+    function resetToStep1() {
+      closeMenu();
+      clearActive();
+      closeEmptyModal();
+      localStorage.setItem(SOURCE_DEFAULT_KEY, sourceInputEl.value);
+      localStorage.removeItem(STORAGE_KEY);
+      window.location.replace(`${window.location.pathname}?reset=${Date.now()}`);
+    }
+
+    async function startNewTextFromClipboard() {
+      closeMenu();
+      clearActive();
+      closeEmptyModal();
+      closeVoteModal();
+      state.review = null;
+      state.runStates = {};
+      state.history = [];
+      state.isLoadingReview = false;
+      state.openVoteAfterReview = true;
+
+      try {
+        const clipboardText = await navigator.clipboard.readText();
+        if (!clipboardText || !clipboardText.trim()) {
+          step2El.classList.add("hidden");
+          step1El.classList.remove("hidden");
+          setStep1Status("Clipboard-ul este gol.", "error");
+          focusSourceInput(true);
+          state.openVoteAfterReview = false;
+          saveState();
+          return;
+        }
+
+        sourceInputEl.value = clipboardText;
+        localStorage.setItem(SOURCE_DEFAULT_KEY, clipboardText);
+        saveState();
+        await analyze();
+      } catch (error) {
+        step2El.classList.add("hidden");
+        step1El.classList.remove("hidden");
+        setStep1Status("Browserul nu a permis citirea din clipboard. Lipește manual textul.", "error");
+        focusSourceInput(true);
+        state.openVoteAfterReview = false;
+        saveState();
+      }
+    }
+
+    function bindSegmentEvents() {
+      document.querySelectorAll(".segment.has-suggestion").forEach((segment) => {
+        segment.addEventListener("mouseenter", () => {
+          openMenu(segment.dataset.runKey, segment.dataset.id, segment, segment.dataset.type);
+        });
+      });
+    }
+
+function rerenderRun(runKey) {
+  const run = getRunByKey(runKey);
+  const runState = getRunState(runKey);
+  if (!run) return;
+  const originalText = state.review.document.content_text || "";
+  const proposedText = buildProposedText(originalText, runState.materializedSuggestions);
+  const originalContainer = document.querySelector(`[data-run-original="${runKey}"]`);
+  const proposedContainer = document.querySelector(`[data-run-proposed="${runKey}"]`);
+  if (!originalContainer || !proposedContainer) return;
+  if (state.globalViewMode === "original") {
+    const previewTitle = state.review.document.preview_title || state.review.document.title || "";
+    const previewHtml = state.review.document.preview_html || "";
+    const originalPreview = splitPreviewDocument(originalText, previewTitle);
+    const proposedPreview = splitPreviewDocument(proposedText, previewTitle);
+    const bodyStartOffset = originalPreview.body ? originalText.indexOf(originalPreview.body) : originalText.length;
+    const rebuildPreviewBody = hasApprovedBodySuggestions(runState.materializedSuggestions, Math.max(0, bodyStartOffset));
+    renderPreviewHtml(originalContainer, originalPreview.title || previewTitle, previewHtml, originalPreview.body);
+    renderPreviewHtml(
+      proposedContainer,
+      proposedPreview.title || previewTitle,
+      rebuildPreviewBody
+        ? buildProposedPreviewHtml(previewHtml, originalPreview.body, runState.materializedSuggestions, Math.max(0, bodyStartOffset))
+        : previewHtml,
+      proposedPreview.body
+    );
+    return;
+  }
+  renderSegments(originalContainer, originalText, runState.materializedSuggestions, "original", runKey);
+  renderSegments(proposedContainer, proposedText, runState.materializedSuggestions, "proposed", runKey);
+}
+
+function renderReview() {
+  if (!state.review) return;
+  state.isLoadingReview = false;
+  const originalText = state.review.document.content_text || "";
+  state.selectedModels = normalizeSelectedModels(state.selectedModels);
+  const activeRunKeys = new Set((state.review.runs || []).map((run) => getRunKey(run.model)));
+  const runsByModel = new Map((state.review.runs || []).map((run) => [run.model, run]));
+
+  (state.review.runs || []).forEach((run) => {
+    const runKey = getRunKey(run.model);
+    const previousStatuses = new Map(
+      ((state.runStates[runKey]?.materializedSuggestions) || []).map((item) => [item.id, item.status || "pending"])
+    );
+    state.runStates[runKey] = {
+      materializedSuggestions: materializeSuggestions(originalText, run.suggestions || []).map((item) => ({
+        ...item,
+        status: previousStatuses.get(item.id) || item.status || "pending"
+      }))
+    };
+  });
+  Object.keys(state.runStates).forEach((runKey) => {
+    if (!activeRunKeys.has(runKey)) delete state.runStates[runKey];
+  });
+
+  const totalEstimatedCost = (state.review.runs || []).reduce((sum, run) => (
+    typeof run.estimated_cost_usd === "number" && !Number.isNaN(run.estimated_cost_usd)
+      ? sum + run.estimated_cost_usd
+      : sum
+  ), 0);
+
+  reviewSummaryEl.innerHTML = getAvailableModels().map((model) => {
+    const run = runsByModel.get(model);
+    return buildModelCardHtml(model, run, "step2", totalEstimatedCost);
+  }).join("");
+  bindModelToggleListeners(reviewSummaryEl);
+
+  reviewResultsEl.innerHTML = (state.review.runs || []).map((run) => {
+    const runKey = getRunKey(run.model);
+    return `
+      <section class="run-card">
+        <div class="run-head">
+          <div class="run-controls"><h3>${escapeHtml(run.model)}</h3></div>
+        </div>
+        <div class="pair-grid">
+          <section class="panel original">
+            <div class="panel-head"><h2>Original</h2></div>
+            <div class="panel-body"><div class="article" data-run-original="${runKey}"></div></div>
+          </section>
+          <section class="panel proposed">
+            <div class="panel-head"><h2>Propus</h2></div>
+            <div class="panel-body"><div class="article" data-run-proposed="${runKey}"></div></div>
+          </section>
+        </div>
+      </section>
+    `;
+  }).join("");
+
+  (state.review.runs || []).forEach((run) => rerenderRun(getRunKey(run.model)));
+  syncGlobalViewToggle();
+  bindSegmentEvents();
+  renderUndoState();
+  reviewSubtitleEl.textContent = state.bulkMode
+    ? `Știrea ${state.bulkCurrentIndex + 1}/${getBulkArticles().length}: comparație între ${state.review.runs.length} modele. Input detectat: ${state.review.document.source_format || "text"}.`
+    : `Pasul 2: comparație între ${state.review.runs.length} modele. Input detectat: ${state.review.document.source_format || "text"}.`;
+  syncBulkUi();
+  saveState();
+
+  if (state.globalViewMode === "original") {
+    closeMenu();
+    clearActive();
+    closeEmptyModal();
+    return;
+  }
+
+  if (getAllVisibleSuggestions().length) {
+    closeEmptyModal();
+    window.setTimeout(() => {
+      if (!step2El.classList.contains("hidden")) {
+        if (state.openVoteAfterReview) {
+          state.openVoteAfterReview = false;
+          saveState();
+          openVoteModal();
+        } else {
+          focusFirstSuggestion();
+        }
+      }
+    }, 0);
+  } else {
+    state.openVoteAfterReview = false;
+    closeMenu();
+    clearActive();
+    showEmptyModal();
+  }
+}
+
+function renderLoadingReview() {
+  state.isLoadingReview = true;
+  const selectedModels = normalizeSelectedModels(state.selectedModels);
+  reviewSubtitleEl.textContent = `Pasul 2: aștept răspunsurile celor ${selectedModels.length} modele selectate...`;
+  reviewSummaryEl.innerHTML = getAvailableModels().map((model) => buildModelCardHtml(model, null, "step2")).join("");
+  bindModelToggleListeners(reviewSummaryEl);
+  reviewResultsEl.innerHTML = `<div class="loading-review">Analizez știrea și cer sugestii backend-ului pentru ${escapeHtml(selectedModels.join(", "))}...</div>`;
+  syncBulkUi();
+  renderUndoState();
+  saveState();
+}
+
+    function focusSuggestion(runKey, id) {
+      const anchorEl =
+        document.querySelector(`.segment[data-run-key="${runKey}"][data-id="${id}"][data-type="proposed"]`) ||
+        document.querySelector(`.segment[data-run-key="${runKey}"][data-id="${id}"][data-type="original"]`);
+      if (!anchorEl) return;
+      scrollSuggestionIntoView(anchorEl);
+      afterScrollSettles(() => openMenu(runKey, id, anchorEl, anchorEl.dataset.type || "proposed"));
+    }
+
+    function focusFirstSuggestion() {
+      const items = getAllVisibleSuggestions();
+      if (!items.length) return;
+      focusSuggestion(items[0].runKey, items[0].id);
+    }
+
+    function focusSuggestionByIndex(indexDelta) {
+      const items = getAllVisibleSuggestions();
+      if (!items.length) return;
+      const currentIndex = items.findIndex((item) => item.runKey === state.activeRunKey && item.id === state.activeMenuId);
+      const normalizedIndex = currentIndex === -1
+        ? (indexDelta < 0 ? items.length - 1 : 0)
+        : (currentIndex + indexDelta + items.length) % items.length;
+      const target = items[normalizedIndex];
+      focusSuggestion(target.runKey, target.id);
+    }
+
+    function updateSuggestion(runKey, id, status) {
+      const runState = getRunState(runKey);
+      const item = runState.materializedSuggestions.find((entry) => entry.id === id);
+      if (!item) return;
+      const itemsBefore = getAllVisibleSuggestions();
+      const currentIndex = itemsBefore.findIndex((entry) => entry.runKey === runKey && entry.id === id);
+      state.history.push({ runKey, id, from: item.status || "pending", to: status });
+      item.status = status;
+      rerenderRun(runKey);
+      bindSegmentEvents();
+      renderUndoState();
+      saveState();
+      persistCurrentBulkArticleState();
+
+      const itemsAfter = getAllVisibleSuggestions();
+      if (!itemsAfter.length) {
+        closeMenu();
+        clearActive();
+        return;
+      }
+      const nextItem = itemsAfter[currentIndex] || itemsAfter[itemsAfter.length - 1];
+      if (!nextItem) {
+        closeMenu();
+        clearActive();
+        return;
+      }
+      focusSuggestion(nextItem.runKey, nextItem.id);
+    }
+
+    function undoLastSuggestion() {
+      const lastEntry = state.history.pop();
+      if (!lastEntry) {
+        renderUndoState();
+        saveState();
+        return;
+      }
+      const runState = getRunState(lastEntry.runKey);
+      const item = runState.materializedSuggestions.find((entry) => entry.id === lastEntry.id);
+      if (!item) {
+        renderUndoState();
+        saveState();
+        return;
+      }
+      item.status = lastEntry.from || "pending";
+      rerenderRun(lastEntry.runKey);
+      bindSegmentEvents();
+      renderUndoState();
+      saveState();
+      persistCurrentBulkArticleState();
+      focusSuggestion(lastEntry.runKey, lastEntry.id);
+    }
+
+    function resetSuggestions() {
+      Object.values(state.runStates).forEach((runState) => {
+        runState.materializedSuggestions = (runState.materializedSuggestions || []).map((item) => ({
+          ...item,
+          status: "pending"
+        }));
+      });
+      state.history = [];
+      closeMenu();
+      clearActive();
+      closeEmptyModal();
+      renderReview();
+      persistCurrentBulkArticleState();
+    }
+
+async function analyze() {
+  const source = sourceInputEl.value.trim();
+  const prompt = promptEl.value.trim();
+  const selectedModels = normalizeSelectedModels(state.selectedModels);
+  if (!source) {
+    setStep1Status("Adaugă mai întâi știrea.", "error");
+    return;
+  }
+  if (!selectedModels.length) {
+    setStep1Status("Bifează cel puțin un model.", "error");
+    return;
+  }
+
+  state.bulkMode = false;
+  state.bulkCache = null;
+  state.bulkStatus = null;
+  if (state.bulkPollTimer) {
+    window.clearTimeout(state.bulkPollTimer);
+    state.bulkPollTimer = null;
+  }
+  state.globalViewMode = "suggestii";
+  syncGlobalViewToggle();
+  analyzeButtonEl.disabled = true;
+  bulkProcessButtonStep2El.disabled = true;
+  topNextButtonEl.disabled = true;
+  setStep1Status("Analizez știrea și cer sugestii backend-ului...", "");
+  step1El.classList.add("hidden");
+  step2El.classList.remove("hidden");
+  renderLoadingReview();
+
+  try {
+    const response = await fetch("/api/review", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ source, prompt, models: selectedModels, levels: getRequestedLevels() })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "A apărut o eroare la analiză.");
+    state.review = data;
+    state.runStates = {};
+    state.history = [];
+    setStep1Status("Analiza a fost generată.", "success");
+    renderReview();
+  } catch (error) {
+    state.isLoadingReview = false;
+    step2El.classList.add("hidden");
+    step1El.classList.remove("hidden");
+    setStep1Status(error.message || "Nu am putut genera analiza.", "error");
+  } finally {
+    analyzeButtonEl.disabled = false;
+    bulkProcessButtonStep2El.disabled = false;
+    topNextButtonEl.disabled = false;
+    saveState();
+  }
+}
+
+function handleEscape(event) {
+  const isEscape = event.key === "Escape" || event.key === "Esc" || event.code === "Escape";
+  if (!isEscape) return false;
+  if (voteModalBackdropEl.classList.contains("visible")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeVoteModal();
+    return true;
+  }
+  if (emptyModalBackdropEl.classList.contains("visible")) {
+    event.preventDefault();
+    event.stopPropagation();
+    closeEmptyModal();
+    return true;
+  }
+  if (menuEl.classList.contains("visible") && state.activeRunKey && state.activeMenuId) {
+    event.preventDefault();
+    event.stopPropagation();
+    updateSuggestion(state.activeRunKey, state.activeMenuId, "rejected");
+    return true;
+  }
+  return false;
+}
+
+document.getElementById("toggleLevel2").addEventListener("change", (event) => {
+  setLevel2Enabled(!!event.target.checked);
+});
+
+if (step1ToggleLevel2El) {
+  step1ToggleLevel2El.addEventListener("change", (event) => {
+    setLevel2Enabled(!!event.target.checked);
+  });
+}
+
+redrawButtonEl.addEventListener("click", resetSuggestions);
+newTextButtonEl.addEventListener("click", startNewTextFromClipboard);
+voteButtonEl.addEventListener("click", openVoteModal);
+undoButtonEl.addEventListener("click", undoLastSuggestion);
+analyzeButtonEl.addEventListener("click", analyze);
+bulkProcessButtonEl.addEventListener("click", startBulkProcess);
+bulkProcessButtonStep2El.addEventListener("click", startBulkProcess);
+topNextButtonEl.addEventListener("click", analyze);
+bulkPrevButtonEl.addEventListener("click", async () => {
+  await persistCurrentBulkArticleState();
+  loadBulkArticle(state.bulkCurrentIndex - 1);
+});
+bulkNextButtonEl.addEventListener("click", async () => {
+  await persistCurrentBulkArticleState();
+  loadBulkArticle(state.bulkCurrentIndex + 1);
+});
+
+    document.addEventListener("keydown", (event) => {
+      if (step1El.classList.contains("hidden")) return;
+      if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+        event.preventDefault();
+        analyze();
+      }
+    });
+
+    window.addEventListener("keydown", (event) => {
+      if (handleEscape(event)) return;
+      if (emptyModalBackdropEl.classList.contains("visible")) {
+        if (event.key === "Enter" || (event.key === " " && !event.ctrlKey && !event.metaKey && !event.altKey)) {
+          event.preventDefault();
+          event.stopPropagation();
+          goToNextBulkArticleFromModal();
+          return;
+        }
+      }
+      if (step2El.classList.contains("hidden")) return;
+      if (voteModalBackdropEl.classList.contains("visible")) return;
+      if ((event.ctrlKey || event.metaKey) && !event.shiftKey && !event.altKey && event.key.toLowerCase() === "v") {
+        event.preventDefault();
+        event.stopPropagation();
+        startNewTextFromClipboard();
+        return;
+      }
+      if (state.activeRunKey && state.activeMenuId && event.key === " " && !event.ctrlKey && !event.metaKey && !event.altKey) {
+        event.preventDefault();
+        event.stopPropagation();
+        updateSuggestion(state.activeRunKey, state.activeMenuId, "approved");
+        return;
+      }
+      if ((event.ctrlKey || event.metaKey) && !event.shiftKey && !event.altKey && event.key.toLowerCase() === "z") {
+        event.preventDefault();
+        event.stopPropagation();
+        undoLastSuggestion();
+        return;
+      }
+      if (event.key === "Tab") {
+        event.preventDefault();
+        event.stopPropagation();
+        focusSuggestionByIndex(event.shiftKey ? -1 : 1);
+      }
+    }, true);
+
+    document.addEventListener("click", (event) => {
+      const insideMenu = event.target.closest(".menu");
+      const insideSegment = event.target.closest(".segment.has-suggestion");
+      if (!insideMenu && !insideSegment) {
+        closeMenu();
+        clearActive();
+      }
+    });
+
+    emptyModalBackdropEl.addEventListener("click", (event) => {
+      if (event.target === emptyModalBackdropEl) closeEmptyModal();
+    });
+    voteModalBackdropEl.addEventListener("click", (event) => {
+      if (event.target === voteModalBackdropEl) closeVoteModal();
+    });
+
+    globalViewToggleEl.querySelectorAll("[data-global-view-mode]").forEach((button) => {
+      button.addEventListener("click", () => setGlobalViewMode(button.dataset.globalViewMode));
+    });
+    closeEmptyModalButtonEl.addEventListener("click", closeEmptyModal);
+    emptyModalResetButtonEl.addEventListener("click", resetSuggestions);
+    emptyModalPrevButtonEl.addEventListener("click", goToPreviousBulkArticleFromModal);
+    emptyModalNextButtonEl.addEventListener("click", goToNextBulkArticleFromModal);
+    sourceInputEl.addEventListener("input", saveState);
+    promptEl.addEventListener("input", saveState);
+    sourceInputEl.addEventListener("paste", () => window.setTimeout(analyze, 0));
+
+    const restored = restoreState();
+    loadConfig()
+      .then(async () => {
+        if (!restored) {
+          sourceInputEl.value = demoSource;
+          saveState();
+        }
+        const response = await fetch("/api/bulk-cache");
+        const cache = await response.json();
+        if (Array.isArray(cache.articles) && cache.articles.length) {
+          state.bulkMode = true;
+          state.bulkCache = cache;
+          state.bulkStatus = { running: false, total: cache.articles.length, completed: cache.articles.filter((article) => article.status !== "pending").length, failed: cache.articles.filter((article) => article.status === "error").length };
+          if (!restored) {
+            step1El.classList.add("hidden");
+            step2El.classList.remove("hidden");
+            loadBulkArticle(0);
+          } else {
+            syncBulkUi();
+            if (emptyModalBackdropEl.classList.contains("visible")) {
+              showEmptyModal();
+            }
+          }
+        }
+      })
+      .catch(() => {
+        setStep1Status("Nu am putut încărca promptul inițial din backend.", "error");
+        if (!sourceInputEl.value) sourceInputEl.value = demoSource;
+      });
+    window.addEventListener("load", () => focusSourceInput(true));
+  </script>
+</body>
+</html>
